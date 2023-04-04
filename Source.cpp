@@ -1,5 +1,3 @@
-// denis dalan, 2023
-
 #include <iostream>
 #include <stdlib.h>
 #include <windows.h>
