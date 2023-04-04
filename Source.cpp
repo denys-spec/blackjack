@@ -1,9 +1,13 @@
 #include <iostream>
 #include <stdlib.h>
+#include <windows.h>
+#include <stdio.h>
+#include <conio.h>
 #include <ctime>
 using namespace std;
 
 int AskForReplay();
+void clearscreen(char fill);
 
 int main()
 {
@@ -16,6 +20,7 @@ int main()
 	while (replay) {
 		cout << "Money: " << money << '\n';
 
+		system("color 05");
 		cout << "Bet: ";
 		cin >> bet;
 
@@ -31,6 +36,7 @@ int main()
 		char move;
 
 		while (cards < 21 && ocards < 21) {
+			system("color 06");
 			cout << "Press 'h' to hit or 's' to stand\n";
 			cin >> move;
 			if (move == 'h')
@@ -39,6 +45,7 @@ int main()
 
 				cards += random;
 			}
+			clearscreen(' ');
 			cout << "You have: " << cards << '\n';
 			random = rand() % 1;
 			cout << "Opponent has chosen: ";
@@ -58,7 +65,8 @@ int main()
 
 		if ((ocards == 21 && cards != 21 || cards > ocards && cards < 21 || cards > 21) && cards != ocards)
 		{
-			cout << "You lose!";
+			system("color 40");
+			cout << "You lose!\n";
 			money -= bet;
 			if (money > 0)
 				replay = AskForReplay();
@@ -69,7 +77,8 @@ int main()
 		}
 		else if ((cards == 21 && ocards != 21 || cards > ocards && cards < 21 || ocards > 21) && cards != ocards)
 		{
-			cout << "You win!";
+			system("color 20");
+			cout << "You win!\n";
 			money += bet;
 			replay = AskForReplay();
 		}
@@ -95,4 +104,16 @@ int AskForReplay()
 		r = 0;
 	}
 	return r;
+}
+
+void clearscreen(char fill)
+{
+	COORD tl = { 0, 0 };
+	CONSOLE_SCREEN_BUFFER_INFO s;
+	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+	GetConsoleScreenBufferInfo(console, &s);
+	DWORD written, cells = s.dwSize.X * s.dwSize.Y;
+	FillConsoleOutputCharacter(console, fill, cells, tl, &written);
+	FillConsoleOutputAttribute(console, s.wAttributes, cells, tl, &written);
+	SetConsoleCursorPosition(console, tl);
 }
